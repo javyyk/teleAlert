@@ -6,7 +6,7 @@ Para ello se configurará el uso de una cuenta personal de Telegram, junto a uno
 Esta app especialmente útil cuando estamos en canales con muchos mensajes diarios, de los cuáles solos nos interesen algunos, como canales de noticias, ofertas…etc. Nos permite silenciar los canales en nuestro cliente personal y dejar que el bot nos avise cuando haya algo relevante en el canal.
 
 
-### 1. Metodología
+## 1. Metodología
 Dado los objetivos anteriores, se han buscado librerías que cumplan con los objetivos y faciliten el desarrollo de la aplicación, encontrado las siguientes:
 * **[Telethon](https://github.com/LonamiWebs/Telethon):** 
 Librería desarrollada en Python 3 que implementa la [API cliente oficial](https://core.telegram.org/api#telegram-api) de Telegram.
@@ -27,7 +27,7 @@ Otro punto a tener en cuenta del diseño es la gestión persistente de la config
 
 Para ello crearemos una clase encargada de leer y guardar los parámetros en un fichero de texto visualmente legible.
 
-### 2. Estructura y módulos
+## 2. Estructura y módulos
 Descripción de los diferentes módulos en los que se divide el programa: 
 
 **bot.py:**
@@ -54,7 +54,7 @@ Después monitoriza el estado de los hilos y atiende peticiones del bot mediante
 **packet.py:**
 Clase almacén para la comunicación de los hilos mediante las colas. Contiene request_code (código/constante de la petición), request_data, reply_code(True/False) y reply_data.
 
-### 3. Instalación & requisitos
+## 3. Instalación & requisitos
 Requisitos: 
 * Python >= 3 instalado junto con pip()
 * Cuenta de Telegram
@@ -83,15 +83,15 @@ Ejecutar en el terminal de Python:
 
       Por defecto nuestro bot tiene implementados los siguientes comandos (pegar párrafo en @BotFather):
 
-      > add_channel - Añadir un canal
-      > delete_channel - Borrar un canal
-      > add_keyword - Añadir una palabra clave
-      > delete_keyword - Borrar una palabra clave
-      > set_api_id - Introduce el api_id del cliente
-      > set_api_hash - Introduce el api_hash del cliente
-      > set_phone - Introduce el nº de tlf de la cuenta
-      > client_launch - Inicia el cliente
-      > client_status - Comprueba el estado del cliente
+      ````add_channel - Añadir un canal
+      delete_channel - Borrar un canal
+      add_keyword - Añadir una palabra clave
+      delete_keyword - Borrar una palabra clave
+      set_api_id - Introduce el api_id del cliente
+      set_api_hash - Introduce el api_hash del cliente
+      set_phone - Introduce el nº de tlf de la cuenta
+      client_launch - Inicia el cliente
+      client_status - Comprueba el estado del cliente
 
    7. Con esto hemos acabado con @BotFather
 
@@ -104,7 +104,7 @@ Ejecutar en el terminal de Python:
 3. Ahora ejecutamos el script main.py
    `python main.py`
 
-### 4. Configuración
+## 4. Configuración
 
 Una vez tenemos el bot configurado y ejecutándose, proseguimos la configuración desde la interfaz de este. 
 

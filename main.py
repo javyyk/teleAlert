@@ -35,7 +35,7 @@ class Father:
 
 		def queue_check():
 			try:
-				req = self.queue_to_father.get(True, 5)
+				req = self.queue_to_father.get(True, cons.FATHER_QUEUE_POLL_TIMEOUT)
 				print("Father receive: ", req)
 
 				if req.request_code == cons.CLIENT_START:
@@ -83,11 +83,7 @@ class Father:
 		if __name__ == "__main__":
 			print("Ejecutando Padre")
 			self.config.load_config()
-			conf_dict = self.config.conf_dict
-			self.bot_token = conf_dict['bot_token']
-			self.api_id = conf_dict['api_id']
-			self.api_hash = conf_dict['api_hash']
-			self.phone = conf_dict['phone']
+			load_conf()
 
 			# Iniciar Bot & Client
 			self.bot.start()

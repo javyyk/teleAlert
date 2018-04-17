@@ -3,6 +3,7 @@ import configparser  # config file manager
 import os
 import sys
 from threading import Lock
+import constants as cons
 
 
 class BotTokenError(Exception):
@@ -11,12 +12,10 @@ class BotTokenError(Exception):
 
 
 class ConfigManager:
-	CONF_FILE_NAME = "config.ini"
-	BOT_TOKEN_DEFAULT = "EL_TOKEN_DE_TU_BOT"
 
 	def __init__(self):
 		path = os.path.dirname(os.path.abspath(__file__))
-		self.conf_file = path + "/" + self.CONF_FILE_NAME
+		self.conf_file = path + "/" + cons.CONF_FILE_NAME
 
 		self.config = configparser.ConfigParser()
 
@@ -87,13 +86,13 @@ class ConfigManager:
 
 			# BOT_API_ID
 			if self.config.has_option("Config", "bot_token"):
-				if self.config.get('Config', "bot_token") == self.BOT_TOKEN_DEFAULT:
+				if self.config.get('Config', "bot_token") == cons.BOT_TOKEN_DEFAULT:
 					success = False
 				else:
 					par = {"bot_token": self.config.get('Config', "bot_token")}
 					conf_dict.update(par)
 			else:
-				self.config['Config']["bot_token"] = self.BOT_TOKEN_DEFAULT
+				self.config['Config']["bot_token"] = cons.BOT_TOKEN_DEFAULT
 				success = False
 
 			# API_ID
@@ -204,25 +203,25 @@ class ConfigManager:
 
 			# Error al cargar conf, escribir variables default y salir
 			if success is False:
-				with open(self.CONF_FILE_NAME, 'w') as cfgfile:
+				with open(cons.CONF_FILE_NAME, 'w') as cfgfile:
 					self.config.write(cfgfile)
 				raise BotTokenError()
 			else:
 				print("Configuración cargada correctamente")
 				print(conf_dict)
-				with open(self.CONF_FILE_NAME, 'w') as cfgfile:
+				with open(cons.CONF_FILE_NAME, 'w') as cfgfile:
 					self.config.write(cfgfile)
 
 			self.conf_dict = conf_dict
 
 		except BotTokenError:
-			print("\033[91mRevisa el fichero de configuracion: " + self.CONF_FILE_NAME +
+			print("\033[91mRevisa el fichero de configuracion: " + cons.CONF_FILE_NAME +
 			        ", debes escribir el token de tu bot:"
-			        "\n\tbot_token = "+self.BOT_TOKEN_DEFAULT+"\033[0m")
+			        "\n\tbot_token = "+cons.BOT_TOKEN_DEFAULT+"\033[0m")
 			sys.exit(1)
 
 		except Exception as error:
-			print("Hay errores en el fichero de configuracion ", self.CONF_FILE_NAME, ":")
+			print("Hay errores en el fichero de configuracion ", cons.CONF_FILE_NAME, ":")
 			print("\033[91m", error, "\033[0m")
 			#sys.exit(1)
 

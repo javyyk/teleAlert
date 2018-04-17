@@ -155,7 +155,7 @@ class Client(Thread):
 
 
 		def filter_tl_update(update):
-			#print("Cli tl update:", update)
+			# print("Cli tl update:", update)
 			# UpdateNewChannelMessage(message=Message# (out=False, mentioned=False, media_unread=False, silent=False, post=True, id=1052, from_id=None, to_id=PeerChannel(channel_id=1263221050), fwd_from=None, via_bot_id=None, reply_to_msg_id=None, date=datetime.utcfromtimestamp(1523628439), message='Fri Apr 13 18:07:17 2018 YES!', media=None, reply_markup=None, entities=[], views=1, edit_date=None, post_author=None, grouped_id=None), pts=1053, pts_count=1)
 
 			if type(update) is not UpdateNewChannelMessage:
@@ -198,7 +198,7 @@ class Client(Thread):
 
 
 		# Conectamos la API cliente
-		self.client = TelegramClient('test_sender', self.api_id, self.api_hash, update_workers=1)
+		self.client = TelegramClient('client', self.api_id, self.api_hash, update_workers=1)
 		self.client.connect()
 
 		# Comprobamos si tenemos autorizacion o solicitamos el codigo a tl y al user
@@ -210,7 +210,7 @@ class Client(Thread):
 				self.queue_to_bot.put(request)
 
 				try:
-					req = self.queue_to_cli.get(block=True, timeout=20)
+					req = self.queue_to_cli.get(block=True, timeout=cons.AUTH_CODE_TIMEOUT)
 					if req.request_code is cons.ASK_TL_AUTH_CODE_REPLY:
 						self.client.sign_in(phone=self.phone, code=req.request_data)
 
@@ -272,12 +272,12 @@ class Client(Thread):
 			print("Msg min_id: ", ch.last_msg)
 
 			date_now = datetime.datetime.now()
-			date_sub_1day = date_now - datetime.timedelta(days=1)
+			date_old = date_now - datetime.timedelta(hours=cons.OFFLINE_MAX_HOUR_RETRIEVE)
 
 			query = self.client(GetHistoryRequest(
 				peer=InputPeerChannel(ch.id, ch.access_hash),
-				limit=50,  # Max number of msg get from channel
-				offset_date=date_sub_1day, # Only msgs in last 24h
+				limit=cons.OFFLINE_MAX_MSG_RETRIEVE_PER_CHANNEL,  # Max number of msg get from channel
+				offset_date=date_old,  # Only msgs in last 24h
 				add_offset=0,
 				offset_id=0,
 				max_id=0,
@@ -289,7 +289,7 @@ class Client(Thread):
 			messages = query.messages
 			for msg in messages:
 				if type(msg) is Message:
-					#print(msg)
+					# print(msg)
 					check_msg_match(msg.message)
 				else:
 					print("Warning Cli: unkown msg type", type(msg), msg)
@@ -303,7 +303,7 @@ class Client(Thread):
 		# Bucle polling updates telegram & threads queue
 		while True:
 			try:
-				tl_update = self.client.updates.poll(timeout=2)
+				tl_update = self.client.updates.poll(timeout=cons.CLIENT_TL_POLL_TIMEOUT)
 				filter_tl_update(tl_update)
 				queue_check()
 

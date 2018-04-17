@@ -49,6 +49,7 @@ class Bot(Thread):
 
 				# Espera bloqueante del cliente
 				try:
+					# TODO obsoleto
 					reply = self.queue_to_bot.get(True, 5)
 
 					if reply.reply_code is False:
@@ -116,11 +117,9 @@ class Bot(Thread):
 
 			save_chat_id_fake(msg.chat.id)
 
-			# 'from_user': {'id': 13082610, 'first_name': 'Javier', 'username': 'Javyyk',
 			username = msg.from_user.username
 			bot.send_message(msg.chat.id, "Bienvenido a telegramo @" + username)
-			bot.send_message(msg.chat.id, "En los siguientes pasos vamos a configurar "
-			                              "la aplicacion, ")
+			bot.send_message(msg.chat.id, "En los siguientes pasos vamos a configurar la aplicacion.")
 			bot.send_message(msg.chat.id, "Si algun parametro no se configura bien, puedes volver a hacerlo con:\n"
 			                              "/set_api_id\n/set_api_hash\n/set_phone")
 			bot.send_message(msg.chat.id, "Para ejecutar el cliente manualmente: /client_launch")
@@ -323,12 +322,10 @@ class Bot(Thread):
 		# Maneja los clicks de botones
 		@bot.callback_query_handler(func=lambda call: True)
 		def callback(call):
+			# print(call)
 			chat_id = call.from_user.id
 			if not check_user_auth(chat_id):
 				return
-
-			#print(call)
-			# {'game_short_name': None, 'chat_instance': '8602545633827531903', 'id': '56189384151174121', 'from_user': {'id': 13082610, 'is_bot': False, 'first_name': 'Javier', 'username': 'Javyyk', 'last_name': 'GR', 'language_code': 'es'}, 'message': {'content_type': 'text', 'message_id': 1578, 'from_user': <telebot.types.User object at 0x0710E890>, 'date': 1522259264, 'chat': <telebot.types.Chat object at 0x0710E8D0>, 'forward_from_chat': None, 'forward_from': None, 'forward_date': None, 'reply_to_message': None, 'edit_date': None, 'media_group_id': None, 'author_signature': None, 'text': 'Elige el canal a borrar', 'entities': None, 'caption_entities': None, 'audio': None, 'document': None, 'photo': None, 'sticker': None, 'video': None, 'video_note': None, 'voice': None, 'caption': None, 'contact': None, 'location': None, 'venue': None, 'new_chat_member': None, 'new_chat_members': None, 'left_chat_member': None, 'new_chat_title': None, 'new_chat_photo': None, 'delete_chat_photo': None, 'group_chat_created': None, 'supergroup_chat_created': None, 'channel_chat_created': None, 'migrate_to_chat_id': None, 'migrate_from_chat_id': None, 'pinned_message': None, 'invoice': None, 'successful_payment': None, 'connected_website': None}, 'data': '(502, 1007686014)', 'inline_message_id': None}
 
 			resp = make_tuple(call.data)
 			code = resp[0]
@@ -414,7 +411,7 @@ class Bot(Thread):
 		def queue_check():
 			while True:
 				try:
-					req = self.queue_to_bot.get(block=True, timeout=3)
+					req = self.queue_to_bot.get(block=True, timeout=cons.BOT_QUEUE_POLL_TIMEOUT)
 
 					if req.request_code == cons.CHANNEL_EXISTS:
 						add_channel(req)

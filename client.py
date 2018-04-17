@@ -273,32 +273,35 @@ class Client(Thread):
 
 			date_now = datetime.datetime.now()
 			date_old = date_now - datetime.timedelta(hours=cons.OFFLINE_MAX_HOUR_RETRIEVE)
+			try:
+				query = self.client(GetHistoryRequest(
+					peer=InputPeerChannel(ch.id, ch.access_hash),
+					limit=cons.OFFLINE_MAX_MSG_RETRIEVE_PER_CHANNEL,  # Max number of msg get from channel
+					offset_date=date_old,  # Only msgs in last 24h
+					add_offset=0,
+					offset_id=0,
+					max_id=0,
+					min_id=ch.last_msg,  # Only request msg no procesados
+					hash=0
+				))
 
-			query = self.client(GetHistoryRequest(
-				peer=InputPeerChannel(ch.id, ch.access_hash),
-				limit=cons.OFFLINE_MAX_MSG_RETRIEVE_PER_CHANNEL,  # Max number of msg get from channel
-				offset_date=date_old,  # Only msgs in last 24h
-				add_offset=0,
-				offset_id=0,
-				max_id=0,
-				min_id=ch.last_msg,  # Only request msg no procesados
-				hash=0
-			))
+				# Una vez tenemos los mensajes nuevos, analizarlos
+				messages = query.messages
+				for msg in messages:
+					if type(msg) is Message:
+						# print(msg)
+						check_msg_match(msg.message)
+					else:
+						print("Warning Cli: unkown msg type", type(msg), msg)
 
-			# Una vez tenemos los mensajes nuevos, analizarlos
-			messages = query.messages
-			for msg in messages:
-				if type(msg) is Message:
-					# print(msg)
-					check_msg_match(msg.message)
-				else:
-					print("Warning Cli: unkown msg type", type(msg), msg)
-
-			# Guardar el id del ultimo mensaje procesado
-			if messages:
-				ch.last_msg = messages[0].id
-				self.config.save_var("Config", "channels", self.channels)
-
+				# Guardar el id del ultimo mensaje procesado
+				if messages:
+					ch.last_msg = messages[0].id
+					self.config.save_var("Config", "channels", self.channels)
+			except Exception as err:
+				error = "Cliente: " + str(err)
+				print("WARNING ", error, type(err))
+				bot_send_msg(error)
 
 		# Bucle polling updates telegram & threads queue
 		while True:

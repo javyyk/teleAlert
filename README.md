@@ -205,7 +205,7 @@ Para borrar un canal o palabra, basta invocar el comando y pulsar en el botón c
 
 **Muestra de un mensaje reenviado por el bot:**
 
-![](https://raw.githubusercontent.com/darkvier/teleAlert/master/imgs/5.png)
+![](https://raw.githubusercontent.com/darkvier/teleAlert/master/imgs/6.png)
 
 Cuando el cliente detecte un mensaje que coincide con alguna palabra clave, se lo pasara al bot y este nos lo mostrara tal cual lo recibió el cliente.
 

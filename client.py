@@ -151,7 +151,7 @@ class Client(Thread):
 						req.reply_code = False
 						req.reply_data = "Error al guardar el fichero de conf"
 
-				self.queue_to_bot.put(req)
+			self.queue_to_bot.put(req)
 
 
 		def filter_tl_update(update):

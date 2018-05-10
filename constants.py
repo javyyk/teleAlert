@@ -1,3 +1,4 @@
+# Codigos para comunicacion de hilos
 CHANNEL_EXISTS = 500
 DELETE_CHANNEL = 502
 ADD_KEYWORD = 504
@@ -19,13 +20,8 @@ OFFLINE_MAX_MSG_RETRIEVE_PER_CHANNEL = 10
 # Antiguedad maxima de los mensajes anteriores/omitidos a mostrar en horas
 OFFLINE_MAX_HOUR_RETRIEVE = 24
 
-# Tiempo que el cliente esperara un update de Telegram en seg
-CLIENT_TL_POLL_TIMEOUT = 2
 
-# Tiempo que el bot esperara un msg de su cola en seg
-BOT_QUEUE_POLL_TIMEOUT = 2
-
-# Tiempo que el bot esperara un msg de su cola en seg
+# Tiempo que el padre esperara un msg de su cola en seg
 FATHER_QUEUE_POLL_TIMEOUT = 2
 
 CONF_FILE_NAME = "config.ini"

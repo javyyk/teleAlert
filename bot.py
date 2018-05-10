@@ -411,7 +411,7 @@ class Bot(Thread):
 		def queue_check():
 			while True:
 				try:
-					req = self.queue_to_bot.get(block=True, timeout=cons.BOT_QUEUE_POLL_TIMEOUT)
+					req = self.queue_to_bot.get(block=True)
 
 					if req.request_code == cons.CHANNEL_EXISTS:
 						add_channel(req)

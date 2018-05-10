@@ -67,18 +67,19 @@ class Client(Thread):
 				print("Excepcion:", e)
 
 		def queue_check():
-			try:
-				req = self.queue_to_cli.get_nowait()
-				print("Cli receive: ", req)
+			while True:
+				try:
+					req = self.queue_to_cli.get(block=True)
+					print("Cli receive: ", req)
 
-				if req.request_code == cons.ADD_CHANNEL:
-					add_channel(req)
-				elif req.request_code == cons.RELOAD_CONF:
-					load_conf()
+					if req.request_code == cons.ADD_CHANNEL:
+						add_channel(req)
+					elif req.request_code == cons.RELOAD_CONF:
+						load_conf()
 
 
-			except Empty:
-				pass
+				except Empty:
+					pass
 
 		def bot_send_msg(text):
 			packet = Packet(cons.SEND_MSG, text)
@@ -155,8 +156,8 @@ class Client(Thread):
 
 
 		def filter_tl_update(update):
-			# print("Cli tl update:", update)
-			# UpdateNewChannelMessage(message=Message# (out=False, mentioned=False, media_unread=False, silent=False, post=True, id=1052, from_id=None, to_id=PeerChannel(channel_id=1263221050), fwd_from=None, via_bot_id=None, reply_to_msg_id=None, date=datetime.utcfromtimestamp(1523628439), message='Fri Apr 13 18:07:17 2018 YES!', media=None, reply_markup=None, entities=[], views=1, edit_date=None, post_author=None, grouped_id=None), pts=1053, pts_count=1)
+			#print("Cli tl update:", update)
+			# UpdateNewChannelMessage(message=Message (out=False, mentioned=False, media_unread=False, silent=False, post=True, id=1052, from_id=None, to_id=PeerChannel(channel_id=1263221050), fwd_from=None, via_bot_id=None, reply_to_msg_id=None, date=datetime.utcfromtimestamp(1523628439), message='Fri Apr 13 18:07:17 2018 YES!', media=None, reply_markup=None, entities=[], views=1, edit_date=None, post_author=None, grouped_id=None), pts=1053, pts_count=1)
 
 			if type(update) is not UpdateNewChannelMessage:
 				return
@@ -184,7 +185,7 @@ class Client(Thread):
 				if msg_match:
 					# Telegram BOT API message
 					bot_send_msg(msg)
-					print("Cli: message match -> send to bot")
+					print("Cli: message match -> send to bot ("+msg[0:10]+")")
 					break
 
 
@@ -303,14 +304,26 @@ class Client(Thread):
 				print("WARNING ", error, type(err))
 				bot_send_msg(error)
 
+
+
+		thread_queue = Thread(target=queue_check)
+		thread_queue.daemon = True
+		thread_queue.start()
+
+
+
+
+
+
 		# Bucle polling updates telegram & threads queue
 		while True:
 			try:
-				tl_update = self.client.updates.poll(timeout=cons.CLIENT_TL_POLL_TIMEOUT)
+				tl_update = self.client.updates.poll()
 				filter_tl_update(tl_update)
-				queue_check()
 
 			except KeyboardInterrupt:
 				break
+			except Exception as e:
+				print("Error: ", e)
 
 		self.client.disconnect()

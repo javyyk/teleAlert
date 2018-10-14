@@ -11,7 +11,7 @@ La aplicación es personal/privada, por ello cada usuario deberá descargársela
 
 - Pc o servidor propio en el que se ejecute la aplicación
 - Python >= 3, junto a dos librerías externas
-- Cuenta en el servicio de Telegram
+- Cuenta en el servicio de Telegram.
 
 
 
